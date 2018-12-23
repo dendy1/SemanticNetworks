@@ -12,6 +12,15 @@ namespace SemanticNetworksLibrary.Misc
 {
     public class Utils
     {
+        public enum MarkerType
+        {
+            Start,
+            End,
+            Center,
+            CenterStart,
+            CenterEnd
+        }
+
         public static void EnableDoubleBuffer(Control control)
         {
             typeof(Control).InvokeMember("DoubleBuffered",

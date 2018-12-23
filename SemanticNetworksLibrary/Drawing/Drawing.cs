@@ -1,6 +1,5 @@
 ﻿using SemanticNetworksLibrary.Semantic_Network;
 using System.Drawing;
-using System.Linq;
 
 namespace SemanticNetworksLibrary.Drawing
 {
@@ -22,7 +21,6 @@ namespace SemanticNetworksLibrary.Drawing
         public static void DrawNode(Graphics g, Node node, DrawConfig drawConfig)
         {
             node.Shape.Draw(g, node, drawConfig);
-            node.CalclulateMarks(drawConfig);
             if (node.Selected)
                 foreach (PointF p in node.Marks)
                 {
@@ -33,26 +31,26 @@ namespace SemanticNetworksLibrary.Drawing
         public static void DrawEdge(Graphics g, Edge edge, DrawConfig drawConfig)
         {
             edge.Shape.Draw(g, edge, drawConfig);
-
-            Pen pen = edge.Selected ? drawConfig.EdgeConfig.SelectedEdgePen : drawConfig.EdgeConfig.EdgePen;
+            Pen pen = edge.Selected || edge.Edit ? drawConfig.EdgeConfig.SelectedEdgePen : drawConfig.EdgeConfig.EdgePen;
             edge.ArrowHeadShape.Draw(
                 g,
                 pen,
-                edge.LinePoints[edge.LinePoints.Count - 2], edge.LinePoints.Last(),
-                drawConfig.EdgeConfig.ArrowSize
+                edge.HeadArrowStart, edge.End,
+                drawConfig.Converter.UnscaledSize(drawConfig.EdgeConfig.ArrowSize)
                 );
             edge.ArrowTailShape.Draw(
                 g,
                 pen,
-                edge.LinePoints[1], edge.LinePoints[0],
-                drawConfig.EdgeConfig.ArrowSize
+                edge.TailArrowStart, edge.Start,
+                drawConfig.Converter.UnscaledSize(drawConfig.EdgeConfig.ArrowSize)
             );
 
-            if (edge.Selected)
+            if (edge.Edit)
             {
-                foreach (var VARIABLE in edge.MovementPoints)
+                foreach (PointF pt in edge.Markers.Values)
                 {
-                    g.DrawEllipse(drawConfig.EdgeConfig.EdgePen, VARIABLE.X - 15 / 2, VARIABLE.Y - 15 / 2, 15, 15);
+                    SizeF s = drawConfig.Converter.UnscaledSize(drawConfig.EdgeConfig.MarkerSize);
+                    g.DrawRectangle(new Pen(Color.DarkOrange, 5), pt.X - s.Width / 2, pt.Y - s.Height / 2, s.Width, s.Height);
                 }
             }
         }
@@ -124,18 +122,31 @@ namespace SemanticNetworksLibrary.Drawing
             Select(p.X, p.Y, semanticNetwork, drawConfig);
         }
 
+        public static void Editing(Point p, SemanticNetwork semanticNetwork, DrawConfig drawConfig)
+        {
+            if (CheckEdge(p, semanticNetwork, drawConfig) != null)
+            {
+                CheckEdge(p, semanticNetwork, drawConfig).Edit = true;
+            }
+            else
+            {
+                foreach (var edge in semanticNetwork.Edges)
+                {
+                    edge.Edit = false;  
+                }
+            }
+        }
+
         public static PointF CheckMark(int U, int V, Edge edge, DrawConfig drawConfig)
         {
-            foreach (var VARIABLE in edge.MovementPoints)
+            foreach (PointF p in edge.Markers.Values)
             {
-                Rectangle rect = new Rectangle(
-                    (int)VARIABLE.X - drawConfig.EdgeConfig.MarkSize.Width / 2, 
-                    (int)VARIABLE.Y - drawConfig.EdgeConfig.MarkSize.Height / 2,
-                    drawConfig.EdgeConfig.MarkSize.Width,
-                    drawConfig.EdgeConfig.MarkSize.Height
-                    );
+                SizeF s = drawConfig.Converter.UnscaledSize(drawConfig.EdgeConfig.MarkerSize);
+                RectangleF rect = new RectangleF(p.X - s.Width / 2, p.Y - s.Height / 2, s.Width, s.Height);
                 if (rect.Contains(U, V))
-                    return VARIABLE;
+                {
+                    return p;
+                }
             }
             return PointF.Empty;
         }

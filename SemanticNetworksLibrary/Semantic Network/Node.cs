@@ -26,16 +26,6 @@ namespace SemanticNetworksLibrary.Semantic_Network
             }
         }
 
-        public Node(string Concept, float X, float Y, INodeShape shape)
-        {
-            this.Concept = Concept;
-            this.X = X;
-            this.Y = Y;
-            Shape = shape;
-            Neighbours = new List<Edge>();
-            Marks = new List<PointF>();
-        }
-
         public Node(string Concept, PointF position, INodeShape shape)
         {
             this.Concept = Concept;
@@ -49,11 +39,6 @@ namespace SemanticNetworksLibrary.Semantic_Network
         public bool Contains(Point point, DrawConfig drawConfig)
         {
             return Shape.Contains(point, this, drawConfig);
-        }
-
-        public void CalclulateMarks(DrawConfig drawConfig) //в экранных координатах
-        {
-            Shape.CalculateMarks(this, drawConfig);
         }
 
         public override string ToString()

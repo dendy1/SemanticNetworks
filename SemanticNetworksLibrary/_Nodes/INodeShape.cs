@@ -8,6 +8,5 @@ namespace SemanticNetworksLibrary._Nodes
     {
         void Draw(Graphics g, Node node, DrawConfig drawConfig);
         bool Contains(Point point, Node n, DrawConfig drawConfig);
-        void CalculateMarks(Node n, DrawConfig drawConfig);
     }
 }

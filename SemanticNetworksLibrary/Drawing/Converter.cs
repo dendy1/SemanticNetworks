@@ -41,22 +41,22 @@ namespace SemanticNetworksLibrary.Misc
             }
         }
 
-        public int XXtoII(double x)
+        public float XXtoII(float x)
         {
             return (int)Math.Round(Width / (Xmax - Xmin) * (x - Xmin));
         }
 
-        public int YYtoJJ(double y)
+        public float YYtoJJ(float y)
         {
             return (int)Math.Round(Height - Height / (Ymax - Ymin) * (y - Ymin));
         }
 
-        public float IItoXX(int i)
+        public float IItoXX(float i)
         {
             return (float)(Xmin + (Xmax - Xmin) / Width * i);
         }
 
-        public float JJtoYY(int j)
+        public float JJtoYY(float j)
         {
             return (float)(Ymax - (Ymax - Ymin) / Height * j);
         }
@@ -66,9 +66,9 @@ namespace SemanticNetworksLibrary.Misc
             return new PointF(IItoXX(pos.X), JJtoYY(pos.Y));
         }
 
-        public Point XYtoIJ(PointF pos)
+        public PointF XYtoIJ(PointF pos)
         {
-            return new Point(XXtoII(pos.X), YYtoJJ(pos.Y));
+            return new PointF(XXtoII(pos.X), YYtoJJ(pos.Y));
         }
 
         public Font ToScreenFont(Font font)
@@ -87,6 +87,16 @@ namespace SemanticNetworksLibrary.Misc
             {
                 return Width / (float)(Xmax - Xmin);
             }
+        }
+
+        public SizeF UnscaledSize(SizeF size)
+        {
+            return new SizeF(size.Width * Scale, size.Height * Scale);
+        }
+
+        public SizeF ScaledSize(SizeF size)
+        {
+            return new SizeF(size.Width / Scale, size.Height / Scale);
         }
     }
 }

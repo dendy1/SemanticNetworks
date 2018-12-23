@@ -16,19 +16,10 @@ namespace CG_Task6
         private Converter converter;
         private SemanticNetwork SemanticNetwork;
         private DrawConfig drawConfig;
-
-        private bool AddingNewEdgeFlag;
-        private bool MultiSelectingFlag;
-        private bool SelectingAreaFlag;
-        private bool moving;
-
         private float coeff = 1;
-
-        Node selected1, selected2;
-        Point start, end;
-        MouseEventArgs e0;
-        PointF mouseClick;
-        float deltaX = 0, deltaY = 0;
+        private Node selected1, selected2;
+        private bool AddingNewEdgeFlag;
+        private MouseEventArgs e0;
 
         public MainForm()
         {
@@ -80,7 +71,7 @@ namespace CG_Task6
                     NodeForm nf = new NodeForm();
                     if (nf.ShowDialog() == DialogResult.OK)
                     {
-                        SemanticNetwork.AddNode(new Node(nf.Info, converter.IJtoXY(e.Location), new RectangleNode()));
+                        SemanticNetwork.AddNode(new Node(nf.Info, converter.IJtoXY(e.Location), new SemanticNetworksLibrary._Nodes.Rectangle()));
                     }
                 }
             }
@@ -90,20 +81,16 @@ namespace CG_Task6
         private void DrawPanel_MouseClick(object sender, MouseEventArgs e)
         {
             DrawPanel.Focus();
-
-            Node checkNode = Drawing.CheckNode(e.Location, SemanticNetwork, drawConfig);
-
-            if (e.Button == MouseButtons.Left && SelectingAreaFlag && checkNode == null)
+            Drawing.Editing(e.Location, SemanticNetwork, drawConfig);
+            if (e.Button == MouseButtons.Left)
             {
                 SemanticNetwork.Deselect();
-                SelectingAreaFlag = false;
             }
 
             if (AddingNewEdgeFlag)
             {
                 for (int i = 0; i < SemanticNetwork.Nodes.Count; i++)
                 {
-                    PointF mousePoint = converter.IJtoXY(e.Location);
                     Node node = Drawing.CheckNode(e.X, e.Y, SemanticNetwork, drawConfig);
                     if (node == null) return;
 
@@ -122,8 +109,8 @@ namespace CG_Task6
                         if (addNewEdgeForm.ShowDialog() == DialogResult.OK)
                         {
                             Relation relation = addNewEdgeForm.GetRelation;
-                            Edge edge = new Edge(relation, selected1, selected2, new CurvedLineEdge(), new CustomArrow(), new CustomArrow());
-                            edge.Calculate(drawConfig);
+                            Edge edge = new Edge(relation, selected1, selected2, new CurvedLine(), new CustomArrow(), new CustomArrow());
+                            edge.SetDefaultValues(drawConfig);
                             SemanticNetwork.AddEdge(edge);
                             AddingNewEdgeFlag = false;
                         }
@@ -148,33 +135,22 @@ namespace CG_Task6
                     SemanticNetwork.SelectedNode.Position = converter.IJtoXY(e.Location);                  
                 }
 
-                if (SemanticNetwork.SelectedEdge != null)
+                if (SemanticNetwork.EditingEdge != null)
                 {
-                    PointF mark = Drawing.CheckMark(e.Location, SemanticNetwork.SelectedEdge, drawConfig);
+                    PointF mark = Drawing.CheckMark(e.Location, SemanticNetwork.EditingEdge, drawConfig);
                     if (mark != PointF.Empty)
                     {
-                        
-                        List<PointF> marksFs = SemanticNetwork.SelectedEdge.MovementPoints;
-                        if (mark == marksFs[0])
+                        if (mark == SemanticNetwork.EditingEdge.Markers[Utils.MarkerType.Center])
                         {
-                            SemanticNetwork.SelectedEdge.LinePoints[0] = converter.IJtoXY(e.Location);
+                            SemanticNetwork.EditingEdge.Y = drawConfig.Converter.JJtoYY(e.Y);
                         }
-                        else if (mark == marksFs[1]) //start
+                        else if (mark == SemanticNetwork.EditingEdge.Markers[Utils.MarkerType.CenterStart])
                         {
-                            SemanticNetwork.SelectedEdge.XStart = e.Location.X - (converter.XXtoII(SemanticNetwork.SelectedEdge.NodeOne.X) - Drawing.GetSizeF(SemanticNetwork.SelectedEdge.NodeOne, drawConfig).Width / 2);
+                            SemanticNetwork.EditingEdge.XStart = (e.Location.X - (converter.XXtoII(SemanticNetwork.EditingEdge.NodeOne.X) - Drawing.GetSizeF(SemanticNetwork.EditingEdge.NodeOne, drawConfig).Width / 2)) / converter.Scale;
                         }
-                        else if (mark == marksFs[2]) //center
+                        else if (mark == SemanticNetwork.EditingEdge.Markers[Utils.MarkerType.CenterEnd])
                         {
-                            SemanticNetwork.SelectedEdge.Y = converter.JJtoYY(e.Location.Y);
-                        }
-                        else if (mark == marksFs[3]) //end
-                        {
-                            SemanticNetwork.SelectedEdge.XEnd = e.Location.X - (converter.XXtoII(SemanticNetwork.SelectedEdge.NodeTwo.X) -
-                                                                    Drawing.GetSizeF(SemanticNetwork.SelectedEdge.NodeTwo, drawConfig).Width / 2);
-                        }
-                        else if (mark == marksFs[marksFs.Count - 1])
-                        {
-                            SemanticNetwork.SelectedEdge.LinePoints[SemanticNetwork.SelectedEdge.LinePoints.Count - 1] = e.Location;
+                            SemanticNetwork.EditingEdge.XEnd = (e.Location.X - (converter.XXtoII(SemanticNetwork.EditingEdge.NodeTwo.X) - Drawing.GetSizeF(SemanticNetwork.EditingEdge.NodeTwo, drawConfig).Width / 2)) / converter.Scale;
                         }
                     }
                 }
@@ -195,7 +171,7 @@ namespace CG_Task6
             }
             else if (e.Button == MouseButtons.Right)
             {
-                end = e.Location;
+
             }
             DrawPanel.Invalidate();
         }
@@ -204,7 +180,7 @@ namespace CG_Task6
         {
             if (e.Button == MouseButtons.Left)
             {
-                moving = true;
+
             }
             else if (e.Button == MouseButtons.Middle)
             {
@@ -251,10 +227,6 @@ namespace CG_Task6
             {
                 AddingNewEdgeFlag = false;
             }
-            else if (e.KeyCode == Keys.ControlKey)
-            {
-                MultiSelectingFlag = false;
-            }
         }
 
         private void DrawPanel_KeyDown(object sender, KeyEventArgs e)
@@ -263,23 +235,11 @@ namespace CG_Task6
             {
                 AddingNewEdgeFlag = true;
             }
-            else if (e.KeyCode == Keys.ControlKey)
-            {
-                MultiSelectingFlag = true;
-            }
         }
 
         private void SettingsMenuItem_Click(object sender, EventArgs e)
         {
-            //NetworkForm anf = new NetworkForm();
-            //anf.DrawingConfig = SemanticNetwork.DC;
-            //anf.Converter = converter;
-            //anf.NameSN = SemanticNetwork.Name;
-            //if (anf.ShowDialog() == DialogResult.OK)
-            //{
-            //    SemanticNetwork.DC = anf.DrawingConfig;
-            //    SemanticNetwork.Name = anf.NameSN;
-            //}
+
         }
 
         private void edgeSettingsMenuItem_Click(object sender, EventArgs e)
@@ -308,8 +268,7 @@ namespace CG_Task6
                 FillNodeColor = Color.White,
                 FillSelectedNodeColor = Color.White,
                 Font = converter.ToRealFont(new Font(FontFamily.GenericSansSerif, 24)),
-                FontColor = Color.Black,
-                NodeShape = NodeConfig.Shape.Rectangle
+                FontColor = Color.Black
             };
             EdgeConfig edgeConfig = new EdgeConfig()
             {
@@ -317,24 +276,16 @@ namespace CG_Task6
                 SelectedEdgePen = new Pen(Color.Red, 3),
                 Font = converter.ToRealFont(new Font(FontFamily.GenericSansSerif, 24)),
                 FontColor = Color.Black,
-                ArrowSize = new Size(15, 40),
-                EdgeShape = EdgeConfig.Shape.BrokenLine,
-                ArrowHead = EdgeConfig.ArrowShape.My,
-                ArrowTail = EdgeConfig.ArrowShape.My,
-                MarkSize = new Size(10, 10)
+                ArrowSize = converter.ScaledSize(new SizeF(20, 40)),
+                MarkerSize = converter.ScaledSize(new SizeF(30, 30)),
             };
             drawConfig = new DrawConfig(converter, nodeConfig, edgeConfig);
             SemanticNetwork = new SemanticNetwork(new List<Node>(), new List<Edge>(), drawConfig, "TEST");
-            SemanticNetwork.AddNode(new Node("qwe", new PointF(-2.14f, -0.88f), new RectangleNode()));
-            SemanticNetwork.AddNode(new Node("qwe", new PointF(2.31f, 3.4f), new EllipseNode()));
-            foreach (var VARIABLE in SemanticNetwork.Nodes)
-            {
-                VARIABLE.CalclulateMarks(drawConfig);
-            }
-            Edge e = new Edge(new Relation("test"), SemanticNetwork.Nodes[0], SemanticNetwork.Nodes[1], new BrokenLineEdge(), new NoneArrow(), new CustomArrow());
-            e.Calculate(drawConfig);
+            SemanticNetwork.AddNode(new Node("qwe", new PointF(-2.14f, -0.88f), new RoundedRectangle()));
+            SemanticNetwork.AddNode(new Node("qwe", new PointF(2.31f, 3.4f), new Ellipse()));
+            Edge e = new Edge(new Relation("test"), SemanticNetwork.Nodes[0], SemanticNetwork.Nodes[1], new StraightLine(), new TriangleArrow(), new TriangleArrow());
+            e.SetDefaultValues(drawConfig);
             SemanticNetwork.AddEdge(e);
-
         }
     }
 }

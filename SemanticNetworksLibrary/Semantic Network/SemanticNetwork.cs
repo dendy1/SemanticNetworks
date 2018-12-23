@@ -93,5 +93,17 @@ namespace SemanticNetworksLibrary.Semantic_Network
                 return null;
             }
         }
+
+        public Edge EditingEdge
+        {
+            get
+            {
+                foreach (var VARIABLE in Edges)
+                {
+                    if (VARIABLE.Edit) return VARIABLE;
+                }
+                return null;
+            }
+        }
     }
 }

@@ -25,9 +25,9 @@ namespace SemanticNetworksLibrary.Misc
         public static void DrawCurve(this Graphics g, Pen pen, float p1X, float p1Y, float p2X, float p2Y, float p1cX,
             float p1cY, float p2cX, float p2cY, float arrowHeadWidth, float arrowHeadHeight, int nodesCount)
         {
-            PointF[] bezierLine =
-                DrawingAlghoritms.GetBezierCurveNodes(p1X, p1Y, p2X, p2Y, p1cX, p1cY, p2cX, p2cY, nodesCount);
-            g.DrawBeziers(pen, bezierLine);
+            List<PointF> bezierLine =
+                DrawingAlghoritms.GetBezierCurveNodes(p1X, p1Y, p2X, p2Y, p1cX, p1cY, p2cX, p2cY, nodesCount * 3 + 1);
+            g.DrawBeziers(pen, bezierLine.ToArray());
         }
 
         public static void DrawCurve(this Graphics g, Pen pen, PointF start, PointF centerS, PointF centerE, PointF end,  float arrowHeadWidth, float arrowHeadHeight, int nodesCount)
@@ -42,6 +42,24 @@ namespace SemanticNetworksLibrary.Misc
                 p2cY = centerE.Y;
 
             g.DrawCurve(pen, p1X, p1Y, p2X, p2Y, p1cX, p1cY, p2cX, p2cY, arrowHeadWidth, arrowHeadWidth, nodesCount);
+        }
+
+        public static void DrawRoundedRectangle(this Graphics g, Pen pen, float X, float Y, float width, float height, float xradius, float yradius,
+            bool upperleft, bool upperright, bool lowerleft, bool lowerright)
+        {
+            RectangleF rect = new RectangleF(X, Y, width, height);
+            GraphicsPath rounded = DrawingAlghoritms.RoundedRectangle(rect, xradius, yradius, upperleft, upperright,
+                lowerright, lowerleft);
+            g.DrawPath(pen, rounded);
+        }
+
+        public static void FillRoundedRectangle(this Graphics g, Brush brush, float X, float Y, float width, float height, float xradius, float yradius,
+            bool upperleft, bool upperright, bool lowerleft, bool lowerright)
+        {
+            RectangleF rect = new RectangleF(X, Y, width, height);
+            GraphicsPath rounded = DrawingAlghoritms.RoundedRectangle(rect, xradius, yradius, upperleft, upperright,
+                lowerright, lowerleft);
+            g.FillPath(brush, rounded);
         }
     }
 }

@@ -7,18 +7,18 @@ using System.Collections.Generic;
 
 namespace SemanticNetworksLibrary._Nodes
 {
-    public class EllipseNode : INodeShape
+    public class Ellipse : INodeShape
     {
         public bool Contains(Point point, Node n, DrawConfig drawConfig)
         {
             if (n == null) return false;
-            Rectangle rectangle = new Rectangle();
+            System.Drawing.Rectangle rectangle = new System.Drawing.Rectangle();
 
             using (Graphics g = Graphics.FromImage(new Bitmap(1, 1)))
             {
                 Size sizeRect = Size.Round(g.MeasureString(n.ToString(), drawConfig.Converter.ToScreenFont(drawConfig.NodeConfig.Font)));
                 PointF pos = new PointF(drawConfig.Converter.XXtoII(n.X) - sizeRect.Width / 2, drawConfig.Converter.YYtoJJ(n.Y) - sizeRect.Height / 2);
-                rectangle = new Rectangle(pos.ToPoint(), sizeRect);
+                rectangle = new System.Drawing.Rectangle(pos.ToPoint(), sizeRect);
             }
 
             return rectangle.Contains(point);
@@ -36,27 +36,6 @@ namespace SemanticNetworksLibrary._Nodes
             g.DrawString(node.Concept, converter.ToScreenFont(drawConfig.NodeConfig.Font),
                 new SolidBrush(drawConfig.NodeConfig.FontColor),
                 converter.XXtoII(node.X) - size.Width / 2, converter.YYtoJJ(node.Y) - size.Height / 2);
-        }
-
-        public void CalculateMarks(Node n, DrawConfig drawConfig) //в экранных координатах
-        {
-            SizeF size = new SizeF();
-            using (Bitmap bmp = new Bitmap(1, 1))
-            {
-                using (Graphics g = Graphics.FromImage(bmp))
-                {
-                    size = g.MeasureString(n.Concept, drawConfig.Converter.ToScreenFont(drawConfig.NodeConfig.Font));
-                }
-            }
-
-            n.Marks = new List<PointF>()
-            {
-                new PointF(drawConfig.Converter.XXtoII(n.X), drawConfig.Converter.YYtoJJ(n.Y) - size.Height / 2),
-                new PointF(drawConfig.Converter.XXtoII(n.X), drawConfig.Converter.YYtoJJ(n.Y) + size.Height / 2),
-
-                new PointF(drawConfig.Converter.XXtoII(n.X) - size.Width / 2, drawConfig.Converter.YYtoJJ(n.Y)),
-                new PointF(drawConfig.Converter.XXtoII(n.X) + size.Width / 2, drawConfig.Converter.YYtoJJ(n.Y)),
-            };
         }
     }
 }

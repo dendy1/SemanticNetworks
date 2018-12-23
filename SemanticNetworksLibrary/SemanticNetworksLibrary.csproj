@@ -48,8 +48,8 @@
   <ItemGroup>
     <Compile Include="_Arrows\CustomArrow.cs" />
     <Compile Include="_Arrows\NoneArrow.cs" />
-    <Compile Include="_Edges\BrokenLineEdge.cs" />
-    <Compile Include="_Edges\CurvedLineEdge.cs" />
+    <Compile Include="_Edges\BrokenLine.cs" />
+    <Compile Include="_Edges\CurvedLine.cs" />
     <Compile Include="Drawing\Drawing.cs" />
     <Compile Include="Drawing\DrawingAlghoritms.cs" />
     <Compile Include="Drawing\DrawConfig.cs" />
@@ -70,11 +70,12 @@
     <Compile Include="Semantic Network\Relation.cs" />
     <Compile Include="Semantic Network\SemanticNetwork.cs" />
     <Compile Include="_Arrows\TriangleArrow.cs" />
-    <Compile Include="_Edges\NoneEdge.cs" />
-    <Compile Include="_Edges\StraightLineEdge.cs" />
-    <Compile Include="_Nodes\EllipseNode.cs" />
+    <Compile Include="_Edges\None.cs" />
+    <Compile Include="_Edges\StraightLine.cs" />
+    <Compile Include="_Nodes\Ellipse.cs" />
     <Compile Include="_Nodes\INodeShape.cs" />
-    <Compile Include="_Nodes\RectangleNode.cs" />
+    <Compile Include="_Nodes\Rectangle.cs" />
+    <Compile Include="_Nodes\RoundedRectangle.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
