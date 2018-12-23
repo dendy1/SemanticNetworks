@@ -65,7 +65,17 @@ namespace SemanticNetworksLibrary.Semantic_Network
         public void DeSelectEdges()
         {
             foreach (Edge edge in Edges)
+            {
                 edge.EdgeConfig.Selected = false;
+            }
+        }
+
+        public void DeSelectEditing()
+        {
+            foreach (Edge edge in Edges)
+            {
+                edge.EdgeConfig.Edit = false;
+            }
         }
 
         public Node SelectedNode

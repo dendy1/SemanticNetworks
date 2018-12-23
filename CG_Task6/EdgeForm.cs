@@ -21,6 +21,7 @@ namespace CG_Task6
         private Font font = DefaultFont;
         private Bitmap exampleBitmap;
         private bool selected;
+        private EdgeConfig _edgeConfig;
         public Converter Converter { get; set; }
 
         public EdgeForm()
@@ -49,6 +50,7 @@ namespace CG_Task6
             ShapeComboBox.SelectedIndex = 0;
             ArrowHeadComboBox.SelectedIndex = 0;
             ArrowTailComboBox.SelectedIndex = 0;
+
             Utils.EnableDoubleBuffer(DrawPictureBox);
 
         }
@@ -69,14 +71,7 @@ namespace CG_Task6
             }
             set
             {
-                foreach (var t in RelationsListBox.Items)
-                {
-                    if (t.ToString() == value.ToString())
-                    {
-                        RelationsListBox.SelectedItem = t;
-                        break;
-                    }
-                }
+                RelationsListBox.SelectedIndex = 0;
             }
         }
 
@@ -110,20 +105,20 @@ namespace CG_Task6
         {
             get
             {
-                return new EdgeConfig(
-                    (IEdgeShape)ShapeComboBox.SelectedItem,
-                    (IArrowShape)ArrowHeadComboBox.SelectedItem,
-                    (IArrowShape)ArrowTailComboBox.SelectedItem,
-                    Converter.ToRealSize(ArrowSize),
-                    Converter.ToRealSize(MarkerSize),
-                    edgePen,
-                    selectedEdgePen,
-                    Converter.ToRealFont(font),
-                    FontColorBTN.BackColor,
-                    Converter);
+                _edgeConfig.Shape = (IEdgeShape) ShapeComboBox.SelectedItem;
+                _edgeConfig.ArrowHeadShape = (IArrowShape) ArrowHeadComboBox.SelectedItem;
+                _edgeConfig.ArrowTailShape = (IArrowShape) ArrowTailComboBox.SelectedItem;
+                _edgeConfig.ArrowSize = Converter.ToRealSize(ArrowSize);
+                _edgeConfig.MarkerSize = Converter.ToRealSize(MarkerSize);
+                _edgeConfig.EdgePen = edgePen;
+                _edgeConfig.SelectedEdgePen = selectedEdgePen;
+                _edgeConfig.Font = Converter.ToRealFont(font);
+                _edgeConfig.FontColor = FontColorBTN.BackColor;
+                return _edgeConfig;
             }
             set
             {
+                _edgeConfig = value;
                 foreach (var t in ShapeComboBox.Items)
                 {
                     if (t.ToString() == value.Shape.ToString())

@@ -82,9 +82,11 @@ namespace CG_Task6
                     {
                         Relation relation = addNewEdgeForm.Relation;
                         EdgeConfig ec = addNewEdgeForm.EdgeConfig;
+                        ec.Selected = true;
                         SemanticNetwork.SelectedEdge.EdgeConfig = ec;
                         SemanticNetwork.SelectedEdge.Relation = relation;
-                        AddingNewEdgeFlag = false;
+                        SemanticNetwork.DeSelectEditing();
+                        
                     }
                 }
                 else if (e.Button == MouseButtons.Right)
