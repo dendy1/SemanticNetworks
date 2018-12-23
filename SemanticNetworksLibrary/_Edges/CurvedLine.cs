@@ -22,8 +22,8 @@ namespace SemanticNetworksLibrary
             edge.EdgeConfig.HeadArrowStart = bezierLine[bezierLine.Count - 20];
             edge.EdgeConfig.TailArrowStart= bezierLine[20];
 
-            edge.EdgeConfig.CenterS = edge.EdgeConfig.LinePoints[1];
-            edge.EdgeConfig.CenterE = edge.EdgeConfig.LinePoints[2];
+            //edge.EdgeConfig.CenterS = edge.EdgeConfig.LinePoints[1];
+            //edge.EdgeConfig.CenterE = edge.EdgeConfig.LinePoints[2];
 
             edge.EdgeConfig.RefreshMarkers();
 

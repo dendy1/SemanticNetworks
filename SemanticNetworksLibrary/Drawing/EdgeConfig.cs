@@ -146,8 +146,8 @@ namespace SemanticNetworksLibrary.Drawing
         public void RefreshMarkers()
         {
             Markers[Utils.MarkerType.Center] = new PointF((CenterS.X + CenterE.X) / 2, Converter.YYtoJJ(Y));
-            Markers[Utils.MarkerType.CenterStart] = CenterS;
-            Markers[Utils.MarkerType.CenterEnd] = CenterE;
+            Markers[Utils.MarkerType.CenterStart] = new PointF(CenterS.X, (Converter.YYtoJJ(Y) + Start.Y) / 2);
+            Markers[Utils.MarkerType.CenterEnd] = new PointF(CenterE.X, (Converter.YYtoJJ(Y) + End.Y) / 2);
         }
 
         public PointF Start
