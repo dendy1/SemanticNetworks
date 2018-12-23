@@ -89,12 +89,12 @@ namespace SemanticNetworksLibrary.Misc
             }
         }
 
-        public SizeF UnscaledSize(SizeF size)
+        public SizeF ToScreenSize(SizeF size)
         {
             return new SizeF(size.Width * Scale, size.Height * Scale);
         }
 
-        public SizeF ScaledSize(SizeF size)
+        public SizeF ToRealSize(SizeF size)
         {
             return new SizeF(size.Width / Scale, size.Height / Scale);
         }

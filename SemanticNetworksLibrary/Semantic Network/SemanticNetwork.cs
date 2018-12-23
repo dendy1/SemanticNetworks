@@ -7,18 +7,16 @@ namespace SemanticNetworksLibrary.Semantic_Network
     public class SemanticNetwork
     {
         public string Name { get; set; }
-        public DrawConfig DC { get; set; }
         public List<Node> Nodes { get; set; }
         public List<Edge> Edges { get; set; }
         public List<Node> SelectedNodes { get; set; }
         public List<Relation> Relations { get; set; }
 
-        public SemanticNetwork(List<Node> Nodes, List<Edge> Edges, DrawConfig DC, string Name)
+        public SemanticNetwork(List<Node> Nodes, List<Edge> Edges, string Name)
         {
             this.Nodes = Nodes;
             this.Edges = Edges;
             this.Relations = Relation.GetDefaultRelations();
-            this.DC = DC;
             this.Name = Name;
             SelectedNodes = new List<Node>();
         }
@@ -61,13 +59,13 @@ namespace SemanticNetworksLibrary.Semantic_Network
         public void DeSelectNodes()
         {
             foreach (Node s in Nodes)
-                s.Selected = false;
+                s.NodeConfig.Selected = false;
         }
 
         public void DeSelectEdges()
         {
-            foreach (Edge e in Edges)
-                e.Selected = false;
+            foreach (Edge edge in Edges)
+                edge.EdgeConfig.Selected = false;
         }
 
         public Node SelectedNode
@@ -76,7 +74,7 @@ namespace SemanticNetworksLibrary.Semantic_Network
             {
                 foreach (var VARIABLE in Nodes)
                 {
-                    if (VARIABLE.Selected) return VARIABLE;
+                    if (VARIABLE.NodeConfig.Selected) return VARIABLE;
                 }
                 return null;
             }
@@ -86,9 +84,9 @@ namespace SemanticNetworksLibrary.Semantic_Network
         {
             get
             {
-                foreach (var VARIABLE in Edges)
+                foreach (var edge in Edges)
                 {
-                    if (VARIABLE.Selected) return VARIABLE;
+                    if (edge.EdgeConfig.Selected) return edge;
                 }
                 return null;
             }
@@ -98,9 +96,9 @@ namespace SemanticNetworksLibrary.Semantic_Network
         {
             get
             {
-                foreach (var VARIABLE in Edges)
+                foreach (var edge in Edges)
                 {
-                    if (VARIABLE.Edit) return VARIABLE;
+                    if (edge.EdgeConfig.Edit) return edge;
                 }
                 return null;
             }

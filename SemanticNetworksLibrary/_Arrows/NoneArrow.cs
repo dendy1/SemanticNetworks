@@ -13,5 +13,10 @@ namespace SemanticNetworksLibrary._Arrows
         {
             
         }
+
+        public override string ToString()
+        {
+            return "Без стрелки";
+        }
     }
 }

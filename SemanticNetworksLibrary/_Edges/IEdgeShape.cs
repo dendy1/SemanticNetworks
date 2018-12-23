@@ -12,7 +12,8 @@ namespace SemanticNetworksLibrary
 {
     public interface IEdgeShape
     {
-        void Draw(Graphics g, Edge edge, DrawConfig drawConfig);
-        bool Contains(PointF point, Edge edge, DrawConfig drawConfig);
+        void Draw(Graphics g, Edge edge);
+        bool Contains(PointF point, Edge edge);
+        
     }
 }

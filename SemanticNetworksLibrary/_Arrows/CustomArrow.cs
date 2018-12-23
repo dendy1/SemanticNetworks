@@ -43,5 +43,10 @@ namespace SemanticNetworksLibrary
             g.DrawHalfArrow(pen, A, Ol, end);
             g.DrawHalfArrow(pen, B, Ol, end);
         }
+
+        public override string ToString()
+        {
+            return "Красивая";
+        }
     }
 }

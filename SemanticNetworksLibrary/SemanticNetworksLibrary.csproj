@@ -74,6 +74,7 @@
     <Compile Include="_Edges\StraightLine.cs" />
     <Compile Include="_Nodes\Ellipse.cs" />
     <Compile Include="_Nodes\INodeShape.cs" />
+    <Compile Include="_Nodes\None.cs" />
     <Compile Include="_Nodes\Rectangle.cs" />
     <Compile Include="_Nodes\RoundedRectangle.cs" />
   </ItemGroup>

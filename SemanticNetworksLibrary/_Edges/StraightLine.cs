@@ -13,27 +13,32 @@ namespace SemanticNetworksLibrary
 {
     public class StraightLine : IEdgeShape
     {
-        public void Draw(Graphics g, Edge edge, DrawConfig drawConfig)
+        public void Draw(Graphics g, Edge edge)
         {
-            Pen pen = edge.Selected || edge.Edit ? drawConfig.EdgeConfig.SelectedEdgePen : drawConfig.EdgeConfig.EdgePen;
+            Pen pen = edge.EdgeConfig.Selected || edge.EdgeConfig.Edit ? edge.EdgeConfig.SelectedEdgePen : edge.EdgeConfig.EdgePen;
 
-            List<PointF> pts = edge.RefreshPoints(drawConfig);
+            List<PointF> pts = edge.EdgeConfig.RefreshPoints(edge.NodeOne, edge.NodeTwo);
 
-            edge.HeadArrowStart = edge.TailArrowStart =
-                new PointF((pts[0].X + pts[pts.Count - 1].X) / 2, drawConfig.Converter.YYtoJJ(edge.Y));
-            edge.RefreshMarkers(drawConfig);
-            edge.LinePoints = new List<PointF> { pts[0], new PointF((pts[0].X + pts[pts.Count - 1].X) / 2, drawConfig.Converter.YYtoJJ(edge.Y)), pts[pts.Count - 1] };
-            g.DrawLines(pen, edge.LinePoints.ToArray());
+            edge.EdgeConfig.HeadArrowStart = edge.EdgeConfig.TailArrowStart =
+                new PointF((pts[0].X + pts[pts.Count - 1].X) / 2, edge.EdgeConfig.Converter.YYtoJJ(edge.EdgeConfig.Y));
+            edge.EdgeConfig.RefreshMarkers();
+            edge.EdgeConfig.LinePoints = new List<PointF> { pts[0], new PointF((pts[0].X + pts[pts.Count - 1].X) / 2, edge.EdgeConfig.Converter.YYtoJJ(edge.EdgeConfig.Y)), pts[pts.Count - 1] };
+            g.DrawLines(pen, edge.EdgeConfig.LinePoints.ToArray());
         }
 
-        public bool Contains(PointF point, Edge edge, DrawConfig drawConfig)
+        public bool Contains(PointF point, Edge edge)
         {
-            if (edge.LinePoints.Count == 0) return false;
+            if (edge.EdgeConfig.LinePoints.Count == 0) return false;
 
             var path = new GraphicsPath();
-            path.AddLines(edge.LinePoints.ToArray());
-            Pen pen = edge.Selected ? drawConfig.EdgeConfig.SelectedEdgePen : drawConfig.EdgeConfig.EdgePen;
+            path.AddLines(edge.EdgeConfig.LinePoints.ToArray());
+            Pen pen = edge.EdgeConfig.Selected ? edge.EdgeConfig.SelectedEdgePen : edge.EdgeConfig.EdgePen;
             return path.IsOutlineVisible(point, new Pen(pen.Color, pen.Width + 15));
+        }
+
+        public override string ToString()
+        {
+            return "Прямая линия";
         }
     }
 }

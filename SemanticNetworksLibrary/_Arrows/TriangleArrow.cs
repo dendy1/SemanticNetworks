@@ -42,5 +42,10 @@ namespace SemanticNetworksLibrary
 
             g.FillPolygon(new SolidBrush(pen.Color), new PointF[] { end, A, B });
         }
+
+        public override string ToString()
+        {
+            return "Треугольная";
+        }
     }
 }

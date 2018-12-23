@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using SemanticNetworksLibrary.Drawing;
+using SemanticNetworksLibrary.Misc;
 using SemanticNetworksLibrary._Nodes;
 
 namespace SemanticNetworksLibrary.Semantic_Network
@@ -10,11 +11,8 @@ namespace SemanticNetworksLibrary.Semantic_Network
         public float X { get; set; }
         public float Y { get; set; }
         public string Concept { get; set; }
-        public bool Selected { get; set; }
-        public bool Editing { get; set; }
         public List<Edge> Neighbours { get; set; }
-        public List<PointF> Marks { get; set; }
-        public INodeShape Shape { get; set; }
+        public NodeConfig NodeConfig { get; set; }
 
         public PointF Position
         {
@@ -26,19 +24,18 @@ namespace SemanticNetworksLibrary.Semantic_Network
             }
         }
 
-        public Node(string Concept, PointF position, INodeShape shape)
+        public Node(string Concept, PointF position, NodeConfig nodeConfig)
         {
             this.Concept = Concept;
             this.X = position.X;
             this.Y = position.Y;
-            Shape = shape;
             Neighbours = new List<Edge>();
-            Marks = new List<PointF>();
+            NodeConfig = nodeConfig;
         }
 
-        public bool Contains(Point point, DrawConfig drawConfig)
+        public bool Contains(Point point)
         {
-            return Shape.Contains(point, this, drawConfig);
+            return NodeConfig.Shape.Contains(point, this);
         }
 
         public override string ToString()

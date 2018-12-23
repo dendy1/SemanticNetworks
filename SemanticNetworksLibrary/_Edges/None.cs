@@ -8,14 +8,19 @@ namespace SemanticNetworksLibrary._Edges
 {
     public class None : IEdgeShape
     {
-        public void Draw(Graphics g, Edge edge, DrawConfig drawConfig)
+        public void Draw(Graphics g, Edge edge)
         {
             
         }
 
-        public bool Contains(PointF point, Edge edge, DrawConfig drawConfig)
+        public bool Contains(PointF point, Edge edge)
         {
             return false;
+        }
+
+        public override string ToString()
+        {
+            return "Нет линии";
         }
     }
 }
